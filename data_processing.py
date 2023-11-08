@@ -33,6 +33,7 @@ with open(os.path.join(__location__, 'Titanic.csv')) as f:
     for r in rows:
         titanic.append(dict(r))
 
+
 class DB:
     def __init__(self):
         self.database = []
@@ -48,7 +49,6 @@ class DB:
 
 
 import copy
-
 class Table:
     def __init__(self, table_name, table):
         self.table_name = table_name
