@@ -15,6 +15,24 @@ with open(os.path.join(__location__, 'Countries.csv')) as f:
     for r in rows:
         countries.append(dict(r))
 
+players = []
+with open(os.path.join(__location__, 'Players.csv')) as f:
+    rows = csv.DictReader(f)
+    for r in rows:
+        players.append(dict(r))
+
+teams = []
+with open(os.path.join(__location__, 'Teams.csv')) as f:
+    rows = csv.DictReader(f)
+    for r in rows:
+        teams.append(dict(r))
+
+titanic = []
+with open(os.path.join(__location__, 'Titanic.csv')) as f:
+    rows = csv.DictReader(f)
+    for r in rows:
+        titanic.append(dict(r))
+
 class DB:
     def __init__(self):
         self.database = []
@@ -71,12 +89,19 @@ class Table:
     def __str__(self):
         return self.table_name + ':' + str(self.table)
 
+
 table1 = Table('cities', cities)
 table2 = Table('countries', countries)
+table3 = Table('players', players)
+table4 = Table('teams', teams)
+table5 = Table('titanic', titanic)
 my_DB = DB()
 my_DB.insert(table1)
 my_DB.insert(table2)
 my_table1 = my_DB.search('cities')
+my_table3 = my_DB.search('players')
+print(my_table3.table_name, my_table3.table)
+
 
 print("Test filter: only filtering out cities in Italy") 
 my_table1_filtered = my_table1.filter(lambda x: x['country'] == 'Italy')
