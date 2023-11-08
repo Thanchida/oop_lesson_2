@@ -97,11 +97,11 @@ class Table:
 
 table1 = Table('players', players)
 table2 = Table('teams', teams)
-table3 = Table('titanic', titanic)
+table4 = Table('titanic', titanic)
 my_DB = DB()
 my_DB.insert(table1)
 my_DB.insert(table2)
-my_DB.insert(table3)
+my_DB.insert(table4)
 my_tb1 = my_DB.search('players')
 my_tb2 = my_DB.search('teams')
 table3 = my_tb1.join(my_tb2, 'team')
@@ -114,11 +114,37 @@ table4_below = table3.filter(lambda x: int(x['ranking']) < 10).aggregate(lambda 
 table4_above = table3.filter(lambda x: int(x['ranking']) >= 10).aggregate(lambda x: sum(x)/len(x),'games')
 print('games below:', table4_below)
 print('games above:', table4_above)
+
 table4_for = table3.filter(lambda x: x['position'] == 'forward').aggregate(lambda x: sum(x)/len(x), 'passes')
 table4_mid = table3.filter(lambda x: x['position'] == 'midfielder').aggregate(lambda x: sum(x)/len(x), 'passes')
 print('passes forward:', table4_for)
 print('passes midfielders:', table4_mid)
 
+titanic_first = table4.filter(lambda x: int(x['class']) == 1).aggregate(lambda x: sum(x)/len(x), 'fare')
+titanic_third = table4.filter(lambda x: int(x['class']) == 3).aggregate(lambda x: sum(x)/len(x), 'fare')
+print('average fare in the first class:', titanic_first)
+print('average fare in the third class:', titanic_third)
+
+titanic_male = table4.filter(lambda x: x['gender'] == 'M')
+titanic_male_survived = table4.filter(lambda x: x['gender'] == 'M')\
+    .filter(lambda x: x['survived'] == 'yes')
+titanic_female = table4.filter(lambda x: x['gender'] == 'F')
+titanic_female_survived = table4.filter(lambda x: x['gender'] == 'F')\
+    .filter(lambda x: x['survived'] == 'yes')
+male = 0
+male_survived = 0
+female = 0
+female_survived = 0
+for j in titanic_male.table:
+    male += 1
+for i in titanic_male_survived.table:
+    male_survived += 1
+for m in titanic_female.table:
+    female += 1
+for n in titanic_female_survived.table:
+    female_survived += 1
+print(f'rate of survived male passengers: {(male_survived/male)*100}')
+print(f'rate of survived female passenger: {(female_survived/female)*100}')
 # table1 = Table('cities', cities)
 # table2 = Table('countries', countries)
 # table3 = Table('players', players)
