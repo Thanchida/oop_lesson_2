@@ -102,7 +102,7 @@ my_DB.insert(table1)
 my_DB.insert(table2)
 my_table1 = my_DB.search('cities')
 my_table3 = my_DB.search('players')
-print(my_table3.table_name, my_table3.table)
+# print(my_table3.table_name, my_table3.table)
 
 
 print("Test filter: only filtering out cities in Italy") 
