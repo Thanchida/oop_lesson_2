@@ -103,6 +103,9 @@ class Table:
             temps.append(dict_temp)
         return temps
 
+    def pivot_table(self, keys_to_pivot_list, keys_to_aggregate_list, aggregate_func_list):
+
+
     def __str__(self):
         return self.table_name + ':' + str(self.table)
 
