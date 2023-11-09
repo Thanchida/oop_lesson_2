@@ -143,8 +143,8 @@ for m in titanic_female.table:
     female += 1
 for n in titanic_female_survived.table:
     female_survived += 1
-print(f'rate of survived male passengers: {(male_survived/male)*100}')
-print(f'rate of survived female passenger: {(female_survived/female)*100}')
+print(f'rate of survived male passengers: {male_survived/male}')
+print(f'rate of survived female passenger: {female_survived/female}')
 # table1 = Table('cities', cities)
 # table2 = Table('countries', countries)
 # table3 = Table('players', players)
