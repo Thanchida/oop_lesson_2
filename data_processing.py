@@ -89,7 +89,7 @@ class Table:
         for item1 in self.table:
             if self.__is_float(item1[aggregation_key]):
                 temps.append(float(item1[aggregation_key]))
-                else:
+            else:
                 temps.append(item1[aggregation_key])
         return function(temps)
 
@@ -104,7 +104,30 @@ class Table:
         return temps
 
     def pivot_table(self, keys_to_pivot_list, keys_to_aggregate_list, aggregate_func_list):
+        unique_values_list = []
+        result = []
+        for i in keys_to_pivot_list:
+            aggl = table4.aggregate(lambda x: x, i)
+            pl = []
+            for j in aggl:
+                if j not in pl:
+                    if self.__is_float(j):
+                        pl.append(int(j))
+                    else:
+                        pl.append(j)
+            unique_values_list.append(pl)
 
+        # import combination_gen
+        # result = combination_gen.gen_comb_list(unique_values_list, string = [])
+        # # print('filter')
+        # return result
+
+        # for u in unique_values_list:
+        #     # if self.__is_float(u):
+        #     for item1 in keys_to_aggregate_list:
+        #         print(f'{u} : {item1} {aggregate_func_list[]}')
+                # print(self.filter(lambda x: int(x['class']) == 1).aggregate(lambda x: sum(x) / len(x), 'fare'))
+        return result
 
     def __str__(self):
         return self.table_name + ':' + str(self.table)
@@ -160,6 +183,12 @@ for n in titanic_female_survived.table:
     female_survived += 1
 print(f'rate of survived male passengers: {male_survived/male}')
 print(f'rate of survived female passenger: {female_survived/female}')
+print(table4.pivot_table(['embarked','gender','class'],['fare', 'fare', 'fare', 'last'],[lambda x: min(x), lambda x: max(x), lambda x: sum(x)/len(x), lambda x: len(x)]))
+
+
+
+
+
 # table1 = Table('cities', cities)
 # table2 = Table('countries', countries)
 # table3 = Table('players', players)
