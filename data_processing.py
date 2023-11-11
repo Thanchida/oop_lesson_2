@@ -105,9 +105,10 @@ class Table:
 
     def pivot_table(self, keys_to_pivot_list, keys_to_aggregate_list, aggregate_func_list):
         unique_values_list = []
+        all = []
         result = []
         for i in keys_to_pivot_list:
-            aggl = table4.aggregate(lambda x: x, i)
+            aggl = self.aggregate(lambda x: x, i)
             pl = []
             for j in aggl:
                 if j not in pl:
@@ -117,17 +118,36 @@ class Table:
                         pl.append(j)
             unique_values_list.append(pl)
 
-        # import combination_gen
-        # result = combination_gen.gen_comb_list(unique_values_list, string = [])
-        # # print('filter')
-        # return result
-
-        # for u in unique_values_list:
-        #     # if self.__is_float(u):
-        #     for item1 in keys_to_aggregate_list:
-        #         print(f'{u} : {item1} {aggregate_func_list[]}')
-                # print(self.filter(lambda x: int(x['class']) == 1).aggregate(lambda x: sum(x) / len(x), 'fare'))
-        return result
+        import combination_gen
+        result = combination_gen.gen_comb_list(unique_values_list, string=[])
+        print(result)
+        key = []
+        for ki in keys_to_pivot_list:
+            print(ki)
+            key.append(f"x['{ki}']")
+        keyjoin = '+'.join(key)
+        allagglist = []
+        for oneresult in result:
+            resultlist = []
+            allagglist = []
+            for eachcol in oneresult:
+                if self.__is_float(eachcol):
+                    resultlist.append(str(eachcol))
+                else:
+                    resultlist.append(eachcol)
+            resultjoin = ''.join(resultlist)
+            my_string = keyjoin + ' == ' + "'" + resultjoin + "'"
+            print(my_string)
+            fl = 0
+            agglist = []
+            for agi in range(len(keys_to_aggregate_list)):
+                aggc = self.filter(lambda x: eval(my_string, {'x': x})).aggregate(aggregate_func_list[agi], keys_to_aggregate_list[agi])
+                agglist.append(aggc)
+            allagglist.append(oneresult)
+            allagglist.append(agglist)
+            all.append(allagglist)
+        # print(allagglist)
+        return all
 
     def __str__(self):
         return self.table_name + ':' + str(self.table)
@@ -146,7 +166,7 @@ table3 = my_tb1.join(my_tb2, 'team')
 table3_filtered = table3.filter(lambda x: 'ai' in x['team'])\
     .filter(lambda x: int(x['minutes']) < 200)\
     .filter(lambda x: int(x['passes']) > 100)
-table3_select = table3_filtered.select(['surname', 'team', 'position'])
+table3_select = table3_filtered.select(['surname', 'team', 'position', 'shots'])
 print(table3_select)
 table4_below = table3.filter(lambda x: int(x['ranking']) < 10).aggregate(lambda x: sum(x)/len(x),'games')
 table4_above = table3.filter(lambda x: int(x['ranking']) >= 10).aggregate(lambda x: sum(x)/len(x),'games')
@@ -162,6 +182,9 @@ titanic_first = table4.filter(lambda x: int(x['class']) == 1).aggregate(lambda x
 titanic_third = table4.filter(lambda x: int(x['class']) == 3).aggregate(lambda x: sum(x)/len(x), 'fare')
 print('average fare in the first class:', titanic_first)
 print('average fare in the third class:', titanic_third)
+s1 = table4.filter(lambda x: x['embarked']+x['gender']+str(x['class']) == 'SouthamptonM3')
+# print('s1----', s1)
+# print('average fare s1: ', s1)
 
 titanic_male = table4.filter(lambda x: x['gender'] == 'M')
 titanic_male_survived = table4.filter(lambda x: x['gender'] == 'M')\
@@ -184,9 +207,6 @@ for n in titanic_female_survived.table:
 print(f'rate of survived male passengers: {male_survived/male}')
 print(f'rate of survived female passenger: {female_survived/female}')
 print(table4.pivot_table(['embarked','gender','class'],['fare', 'fare', 'fare', 'last'],[lambda x: min(x), lambda x: max(x), lambda x: sum(x)/len(x), lambda x: len(x)]))
-
-
-
 
 
 # table1 = Table('cities', cities)
