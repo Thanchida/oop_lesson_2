@@ -106,7 +106,7 @@ class Table:
     def pivot_table(self, keys_to_pivot_list, keys_to_aggregate_list, aggregate_func_list):
         unique_values_list = []
         all = []
-        result = []
+
         for i in keys_to_pivot_list:
             aggl = self.aggregate(lambda x: x, i)
             pl = []
@@ -119,15 +119,12 @@ class Table:
             unique_values_list.append(pl)
 
         import combination_gen
-        result = combination_gen.gen_comb_list(unique_values_list, string=[])
-        print(result)
+        combresult = combination_gen.gen_comb_list(unique_values_list, result=[], string=[])
         key = []
         for ki in keys_to_pivot_list:
-            print(ki)
             key.append(f"x['{ki}']")
         keyjoin = '+'.join(key)
-        allagglist = []
-        for oneresult in result:
+        for oneresult in combresult:
             resultlist = []
             allagglist = []
             for eachcol in oneresult:
@@ -137,7 +134,6 @@ class Table:
                     resultlist.append(eachcol)
             resultjoin = ''.join(resultlist)
             my_string = keyjoin + ' == ' + "'" + resultjoin + "'"
-            print(my_string)
             fl = 0
             agglist = []
             for agi in range(len(keys_to_aggregate_list)):
@@ -146,7 +142,6 @@ class Table:
             allagglist.append(oneresult)
             allagglist.append(agglist)
             all.append(allagglist)
-        # print(allagglist)
         return all
 
     def __str__(self):
@@ -207,7 +202,8 @@ for n in titanic_female_survived.table:
 print(f'rate of survived male passengers: {male_survived/male}')
 print(f'rate of survived female passenger: {female_survived/female}')
 print(table4.pivot_table(['embarked','gender','class'],['fare', 'fare', 'fare', 'last'],[lambda x: min(x), lambda x: max(x), lambda x: sum(x)/len(x), lambda x: len(x)]))
-
+print(table1.pivot_table(['position'],['passes','shots'],[lambda x: sum(x)/len(x), lambda x: sum(x)/len(x)]))
+print(table4.pivot_table(['class','gender','survived'],['survived', 'fare'],[lambda x: len(x), lambda x: sum(x)/len(x)]))
 
 # table1 = Table('cities', cities)
 # table2 = Table('countries', countries)
